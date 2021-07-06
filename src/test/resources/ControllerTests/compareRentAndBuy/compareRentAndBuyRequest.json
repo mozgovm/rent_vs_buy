@@ -1,0 +1,13 @@
+{
+  "fullPrice": 4200000,
+  "loanBody": 1969000.00,
+  "yearsOfLoan": 20.00,
+  "creditInterestRate": 8.49,
+  "monthlyRent": 22000.00,
+  "rentInflationRate": 4.00,
+  "renovationCost": 500000.00,
+  "debitInterestRate": 8.00,
+  "taxRate": 0.1,
+  "insuranceRate": 0.5,
+  "isDifferentiatedPayment": false
+}
