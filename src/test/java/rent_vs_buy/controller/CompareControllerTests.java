@@ -1,35 +1,40 @@
-package rent_vs_buy;
+package rent_vs_buy.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import rent_vs_buy.balancecalculator.CostsCalculator;
+import rent_vs_buy.balancecalculator.GainsCalculator;
 import rent_vs_buy.utils.Utils;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = Controller.class)
+@SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-public class ControllerTests {
-    private Utils utils = new Utils();
+public class CompareControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private Main app;
+    @Autowired
+    private CostsCalculator costsCalculator;
+    @Autowired
+    private GainsCalculator gainsCalculator;
 
     @Test
     void compareRentAndBuy() throws Exception {
         String requestFilePath = "/ControllerTests/compareRentAndBuy/compareRentAndBuyRequest.json";
         String responseFilePath = "/ControllerTests/compareRentAndBuy/compareRentAndBuyResponse.json";
-        String requestBody = utils.getFileContent(requestFilePath);
-        String responseBody = utils.getFileContent(responseFilePath);
+        String requestBody = Utils.getFileContent(requestFilePath);
+        String responseBody = Utils.getFileContent(responseFilePath);
 
         mockMvc.perform(post("/compare")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -42,8 +47,8 @@ public class ControllerTests {
     void compareRentAndBuyWithDifferentiatedPayment() throws Exception {
         String requestFilePath = "/ControllerTests/compareRentAndBuyWithDifferentiatedPayment/compareRentAndBuyRequest.json";
         String responseFilePath = "/ControllerTests/compareRentAndBuyWithDifferentiatedPayment/compareRentAndBuyResponse.json";
-        String requestBody = utils.getFileContent(requestFilePath);
-        String responseBody = utils.getFileContent(responseFilePath);
+        String requestBody = Utils.getFileContent(requestFilePath);
+        String responseBody = Utils.getFileContent(responseFilePath);
 
         mockMvc.perform(post("/compare")
                 .contentType(MediaType.APPLICATION_JSON)
