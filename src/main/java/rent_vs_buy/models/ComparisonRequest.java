@@ -1,9 +1,10 @@
 package rent_vs_buy.models;
 
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
-public class compareModel {
+public class ComparisonRequest {
     @NotNull(message = "Full price should not be empty")
     @PositiveOrZero
     private Double fullPrice;
@@ -34,6 +35,20 @@ public class compareModel {
     private Double insuranceRate;
     @NotNull(message = "Should provide information about payment type")
     private Boolean isDifferentiatedPayment;
+
+    public ComparisonRequest(Double fullPrice, Double loanBody, Double yearsOfLoan, Double creditInterestRate, Double monthlyRent, Double rentInflationRate, Double renovationCost, Double debitInterestRate, Double taxRate, Double insuranceRate, Boolean isDifferentiatedPayment) {
+        this.fullPrice = fullPrice;
+        this.loanBody = loanBody;
+        this.yearsOfLoan = yearsOfLoan;
+        this.creditInterestRate = creditInterestRate;
+        this.monthlyRent = monthlyRent;
+        this.rentInflationRate = rentInflationRate;
+        this.renovationCost = renovationCost;
+        this.debitInterestRate = debitInterestRate;
+        this.taxRate = taxRate;
+        this.insuranceRate = insuranceRate;
+        this.isDifferentiatedPayment = isDifferentiatedPayment;
+    }
 
     public double getFullPrice() {
         return fullPrice;

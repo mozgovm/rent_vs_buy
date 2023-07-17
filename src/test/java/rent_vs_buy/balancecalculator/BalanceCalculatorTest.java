@@ -1,38 +1,53 @@
-package rent_vs_buy;
+package rent_vs_buy.balancecalculator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import rent_vs_buy.models.ComparisonRequest;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class BalanceTests {
-    private Balance balance;
-    private Balance balanceWithPayedFullPrice;
+@SpringBootTest
+@ActiveProfiles("test")
+class BalanceCalculatorTest {
+
+    @Autowired
+    private BalanceCalculator balanceCalculator;
+    private ComparisonRequest comparisonRequest;
+    private ComparisonRequest comparisonRequestWithPayedFullPrice;
 
     @BeforeEach
     void setUp() {
-        balance = new Balance(6000000,
-                5400000,
-                25,
-                6.49F,
-                25000,
-                4F,
-                1500000,
-                8,
+        comparisonRequest = new ComparisonRequest(6000000D,
+                5400000D,
+                25D,
+                6.49D,
+                25000D,
+                4D,
+                1500000D,
+                8D,
+                0.1,
+                0.5,
                 false);
 
-        assertThat(balance.getLoanBody()).isEqualTo(5400000.0);
-        balanceWithPayedFullPrice = new Balance(6000000,
-                0,
-                25,
-                6.49F,
-                25000,
-                4F,
-                1500000,
-                8,
+        assertThat(comparisonRequest.getLoanBody()).isEqualTo(5400000.0);
+
+        comparisonRequestWithPayedFullPrice = new ComparisonRequest(6000000D,
+                0D,
+                25D,
+                6.49D,
+                25000D,
+                4D,
+                1500000D,
+                8D,
+                0.1,
+                0.5,
                 false);
 
-       assertThat(balance.getLoanBody()).isNotEqualTo(balanceWithPayedFullPrice.getLoanBody());
+        assertThat(comparisonRequest.getLoanBody())
+                .isNotEqualTo(comparisonRequestWithPayedFullPrice.getLoanBody());
     }
 
     @Test
@@ -41,7 +56,7 @@ public class BalanceTests {
         double expected = 12.35;
 
         // when
-        double actual = balance.round(12.3456789);
+        double actual = balanceCalculator.round(12.3456789);
 
         assertThat(expected).isEqualTo(actual);
     }
@@ -54,7 +69,7 @@ public class BalanceTests {
 
 
         // when
-        double actualMonthlyInterestRate = balance.getMonthlyInterestRate(interestRate);
+        double actualMonthlyInterestRate = balanceCalculator.getMonthlyInterestRate(interestRate);
 
         // then
         assertThat(expectedMonthlyInterestRate).isEqualTo(actualMonthlyInterestRate);
@@ -66,7 +81,7 @@ public class BalanceTests {
         double expectedAnnuityPayment = 36427.45;
 
         // when
-        double actualAnnuityPayment = balance.calculateAnnuityPayment();
+        double actualAnnuityPayment = balanceCalculator.calculateAnnuityPayment(comparisonRequest);
 
         // then
         assertThat(expectedAnnuityPayment).isEqualTo(actualAnnuityPayment);
@@ -79,7 +94,7 @@ public class BalanceTests {
         double monthlyRent = 25000;
 
         // when
-        double annuityPayment = balanceWithPayedFullPrice.calculateAnnuityPayment();
+        double annuityPayment = balanceCalculator.calculateAnnuityPayment(comparisonRequestWithPayedFullPrice);
 
         // then
         assertThat(monthlyRent).isEqualTo(annuityPayment);
@@ -92,7 +107,8 @@ public class BalanceTests {
         double loanLeft = 1969000.0;
 
         // when
-        double actualDifferentiatedPayment = balance.calculateMonthlyDifferentiatedPayment(loanLeft);
+        double actualDifferentiatedPayment = balanceCalculator.calculateMonthlyDifferentiatedPayment(comparisonRequest,
+                loanLeft);
 
         // then
         assertThat(expectedDifferentiatedPayment).isEqualTo(actualDifferentiatedPayment);
@@ -106,7 +122,7 @@ public class BalanceTests {
         double expectedBalance = 2000000.0;
 
         // when
-        double actualBalance = balance.calculateBalance(totalLoss, totalGains);
+        double actualBalance = balanceCalculator.calculateBalance(totalLoss, totalGains);
 
         // then
         assertThat(expectedBalance).isEqualTo(actualBalance);
@@ -120,7 +136,7 @@ public class BalanceTests {
         double expectedBalance = 0.0;
 
         // when
-        double actualBalance = balance.calculateBalance(totalLoss, totalGains);
+        double actualBalance = balanceCalculator.calculateBalance(totalLoss, totalGains);
 
         // then
         assertThat(expectedBalance).isEqualTo(actualBalance);
@@ -134,7 +150,7 @@ public class BalanceTests {
         double expectedBalance = -2000000.0;
 
         // when
-        double actualBalance = balance.calculateBalance(totalLoss, totalGains);
+        double actualBalance = balanceCalculator.calculateBalance(totalLoss, totalGains);
 
         // then
         assertThat(expectedBalance).isEqualTo(actualBalance);
